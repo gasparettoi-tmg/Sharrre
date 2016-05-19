@@ -10,9 +10,10 @@ SharrrePlatform.register("facebook", function (options) {
         faces: 'false',
         colorscheme: '',
         font: '',
-        lang: 'en_US',
+        lang: 'en_GB',
         share: '',
         appId: '',
+		fbFeedUrl: 'https://www.facebook.com/dialog/feed?link=',
         popup: {
             width: 900,
             height: 500
@@ -80,9 +81,8 @@ SharrrePlatform.register("facebook", function (options) {
             }, 1000);
         },
         popup: function (opt) {
-            window.open("https://www.facebook.com/sharer/sharer.php?u=" +
-            encodeURIComponent((this.settings.url !== '' ? this.settings.url : opt.url)) +
-            "&t=" + opt.text + "", "", "toolbar=0, status=0, width=" + this.settings.popup.width + ", height=" + this.settings.popup.height);
+			var url = this.settings.fbFeedUrl + encodeURIComponent((this.settings.url !== '' ? this.settings.url : opt.url));
+			window.open(url, "", "toolbar=0, status=0, width=" + this.settings.popup.width + ", height=" + this.settings.popup.height);
         }
     }
 });
