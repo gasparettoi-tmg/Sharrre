@@ -3,7 +3,7 @@ SharrrePlatform.register("googlePlus", function (options) {
         url: '',  //if you need to personnalize button url
         urlCount: false,  //if you want to use personnalize button url on global counter
         size: 'medium',
-        lang: 'en-US',
+        lang: 'en-GB',
         annotation: '',
         count: true,
         popup: {
