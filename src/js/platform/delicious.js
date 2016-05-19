@@ -16,7 +16,7 @@ SharrrePlatform.register("delicious", function (options) {
         settings: defaultSettings,
         url: function (url) {
             // Doesn't respond on https
-            return 'http://feeds.delicious.com/v2/json/urlinfo/data?url={url}&callback=?';
+            return 'http://feeds.del.icio.us/v2/json/urlinfo/data?url={url}&callback=?';
         },
         trackingAction: {site: 'delicious', action: 'add'},
         load: function (self) {
