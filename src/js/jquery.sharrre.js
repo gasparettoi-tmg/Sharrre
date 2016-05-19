@@ -1,7 +1,8 @@
 /*!
  *  Sharrre.com - Make your sharing widget!
- *  Version: 2.0.1
- *  Author: Julien Hany
+ *  Version: 3
+ *  Original Author: Julien Hany
+ *  Currently maintained by: Telegraph Media Group
  *  License: MIT http://en.wikipedia.org/wiki/MIT_License or GPLv2 http://en.wikipedia.org/wiki/GNU_General_Public_License
  */
 
@@ -25,6 +26,7 @@
             enableCounter: true, //disable if you just want use buttons
             enableTracking: false, //tracking with google analitycs
             defaultUrl: "javascript:void(0);",
+            minimiumTotalShareCounter: 0, // only displays total share counter if number is greater or equals this number
             popup: { // Set the popup width and height
                 width: 900,
                 height: 500
@@ -209,21 +211,33 @@
      ================================================== */
     Plugin.prototype.renderer = function () {
         var total = this.options.total,
-            template = this.options.template;
-        if (this.options.shorterTotal === true) {  //format number like 1.2k or 5M
-            total = this.shorterTotal(total);
-        }
+            template = this.options.template,
+            $el = $(this.element);
 
-        if (template !== '') {  //if there is a template
-            template = template.replace('{total}', total);
-            $(this.element).html(template);
-        }
-        else { //template by defaults
-            $(this.element).html(
-                '<div class="box"><a class="count" href="' + this.options.defaultUrl + '">' + total + '</a>' +
-                (this.options.title !== '' ? '<a class="share" href="' + this.options.defaultUrl + '">' + this.options.title + '</a>' : '') +
-                '</div>'
-            );
+        $el.data('total-share', total);
+
+        if(total >= this.options.minimiumTotalShareCounter) {
+            if (this.options.shorterTotal === true) {  //format number like 1.2k or 5M
+                total = this.shorterTotal(total);
+            }
+
+            if (template !== '' && template.match("{total}")) {  //if there is a template
+                template = template.replace('{total}', total);
+                $el.html(template);
+            }
+            else if (template !== '' && $(template).length) { // if there is a selector
+                $(template).text(total);
+            }
+            else { //template by defaults
+                $el.html(
+                    '<div class="box"><a class="count" href="' + this.options.defaultUrl + '">' + total + '</a>' +
+                    (this.options.title !== '' ? '<a class="share" href="' + this.options.defaultUrl + '">' + this.options.title + '</a>' : '') +
+                    '</div>'
+                );
+            }
+            $el.css('display', '');
+        } else {
+            $el.css('display', 'none');
         }
     };
 
@@ -244,7 +258,9 @@
         this.platforms[site].popup(this.options);  //open
         if (this.options.enableTracking === true) { //tracking!
             infos = this.platforms[site].trackingAction;
-            _gaq.push(['_trackSocial', infos.site, infos.action]);
+            if(typeof _gaq != 'undefined') {
+                _gaq.push(['_trackSocial', infos.site, infos.action]);
+            }
         }
     };
 
@@ -285,4 +301,4 @@
             });
         }
     };
-})(window.jQuery || window.Zepto, window, document);
+})(jQuery, window, document);
